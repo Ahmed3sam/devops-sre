@@ -1,3 +1,4 @@
+# network
 module "google_networks" {
   source = "./modules/networks"
 
@@ -5,6 +6,7 @@ module "google_networks" {
   region     = var.region
 }
 
+# gke cluster
 module "gke" {
   source = "./modules/gke"
 
@@ -20,6 +22,7 @@ module "gke" {
   authorized_ipv4_cidr_block = "${module.bastion.ip}/32"
 }
 
+# jump host
 module "bastion" {
   source = "./modules/bastion"
 
@@ -33,7 +36,7 @@ module "bastion" {
   internal_ip     = module.google_networks.jump_host_ip
 }
 
-
+# artifact registry
 module "registry" {
   source     = "./modules/artifact_registry"
   region     = var.region
