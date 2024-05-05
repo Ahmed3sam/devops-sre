@@ -11,8 +11,8 @@ terraform {
     }
   }
   backend "gcs" {
-    bucket = "terraform-bucket-state-sample"
-    prefix = "terraform/infrastructure"
+    #bucket = "terraform-bucket-state-sample"
+    #prefix = "terraform/infrastructure"
   }
 }
 
