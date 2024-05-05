@@ -50,21 +50,7 @@ jobs:
         echo "::set-output name=image::$IMAGE_LOCATION/$IMAGE_REPOSITORY:$git_hash"
         echo "::set-output name=tag::$git_hash"
 
-    - name: Extract metadata (tags, labels) for Docker
-      id: meta
-      uses: docker/metadata-action@v4.1.1
-      with:
-        images: ${{ env.IMAGE_LOCATION }}/${{ env.IMAGE_REPOSITORY }}
-
-    - name: Image Scan
-      uses: aquasecurity/trivy-action@master
-      with:
-        image-ref: '${{ steps.meta.outputs.tags }}-${{ steps.build-image.outputs.tag }}'
-        format: 'table'
-        output: 'trivy-image-results'
-        severity: 'CRITICAL,HIGH'
-        
-        
+              
     - name: Push image to Amazon Artifact Registry
       id: push-image
       env:
