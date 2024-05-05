@@ -22,7 +22,7 @@ module "gke" {
   authorized_ipv4_cidr_block = "${module.bastion.ip}/32"
 }
 
-# jump host 
+# jump host  
 module "bastion" {
   source = "./modules/bastion"
 
