@@ -36,7 +36,7 @@ module "bastion" {
   internal_ip     = module.google_networks.jump_host_ip
 }
 
-# artifact registry 
+# artifact registry
 module "registry" {
   source     = "./modules/artifact_registry"
   region     = var.region
