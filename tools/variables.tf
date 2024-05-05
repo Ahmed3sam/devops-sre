@@ -14,11 +14,6 @@ variable "main_zone" {
 }
 
 
-variable "credentials_file_path" {
-  type        = string
-  description = "The credentials JSON file used to authenticate with GCP"
-}
-
 variable "service_account" {
   type        = string
   description = "The GCP service account"
