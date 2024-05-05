@@ -1,0 +1,91 @@
+name: demo-gitops
+
+permissions:
+  contents: write 
+  actions: read
+  security-events: write
+  statuses: write
+
+on:
+  push:
+    branches: [ main ]
+    paths:
+    - application/**
+
+
+jobs:
+  build:
+    name: Build and Pushing the Image
+    runs-on: ubuntu-latest
+    environment: production
+
+    steps:
+    - name: "Checkout"
+      uses: "actions/checkout@v3"
+
+    - name: "auth"
+      uses: "google-github-actions/auth@v1"
+      with:
+        credentials_json: "${{ secrets.GOOGLE_CREDENTIALS }}"
+
+    - name: "Use gcloud CLI"
+      run: "gcloud info"
+
+    - name: "Docker auth"
+      env:
+        REGION: europe-west1
+      run: |-
+        gcloud auth configure-docker ${{ env.REGION }}-docker.pkg.dev --quiet
+             
+    - name: Build and tag image 
+      id: build-image
+      env:
+        IMAGE_LOCATION: europe-west1-docker.pkg.dev/third-facility-422116-v6/third-facility-422116-v6-sample-app
+        IMAGE_REPOSITORY: sample-app
+
+      run: |
+        # Build a docker container and push it to ECR
+        git_hash=$(git rev-parse --short "$GITHUB_SHA")
+        docker build -t $IMAGE_LOCATION/$IMAGE_REPOSITORY:$git_hash ./application/.
+        echo "::set-output name=image::$IMAGE_LOCATION/$IMAGE_REPOSITORY:$git_hash"
+        echo "::set-output name=tag::$git_hash"
+
+    - name: Extract metadata (tags, labels) for Docker
+      id: meta
+      uses: docker/metadata-action@v4.1.1
+      with:
+        images: ${{ env.IMAGE_LOCATION }}/${{ env.IMAGE_REPOSITORY }}
+
+    - name: Image Scan
+      uses: aquasecurity/trivy-action@master
+      with:
+        image-ref: '${{ steps.meta.outputs.tags }}-${{ steps.build-image.outputs.tag }}'
+        format: 'table'
+        output: 'trivy-image-results'
+        severity: 'CRITICAL,HIGH'
+        
+        
+    - name: Push image to Amazon Artifact Registry
+      id: push-image
+      env:
+        IMAGE_LOCATION: europe-west1-docker.pkg.dev/third-facility-422116-v6/third-facility-422116-v6-sample-app
+        IMAGE_REPOSITORY: sample-app
+
+      run: |
+        echo "Pushing image to ECR..."
+        git_hash=$(git rev-parse --short "$GITHUB_SHA")
+        docker push $IMAGE_LOCATION/$IMAGE_REPOSITORY:$git_hash
+        echo "::set-output name=image::$IMAGE_LOCATION/$IMAGE_REPOSITORY:$git_hash"
+       
+      
+    - name: Update Version
+      run: |
+          git_hash=$(git rev-parse --short "$GITHUB_SHA")
+          version=$(cat ./application/helm/values.yaml | grep tag: | awk '{print $2}')
+          sed -i "s/$version/$git_hash/" ./application/helm/values.yaml
+          
+    - name: Commit and push changes
+      uses: devops-infra/action-commit-push@v0.3
+      with:
+        github_token: ${{ secrets.TOKEN }}
+        commit_message: Version updated
