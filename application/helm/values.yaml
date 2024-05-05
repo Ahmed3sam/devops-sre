@@ -5,7 +5,7 @@ image:
   repository: europe-west1-docker.pkg.dev/third-facility-422116-v6/third-facility-422116-v6-sample-app/sample-app
   pullPolicy: IfNotPresent
   # Overrides the image tag whose default is the chart appVersion.
-  tag: "v1"
+  tag: 49a49b4
 
 service:
   type: LoadBalancer
