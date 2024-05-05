@@ -1,0 +1,27 @@
+
+replicaCount: 2
+namespace: dev
+image:
+  repository: europe-west1-docker.pkg.dev/third-facility-422116-v6/third-facility-422116-v6-sample-app/sample-app
+  pullPolicy: IfNotPresent
+  # Overrides the image tag whose default is the chart appVersion.
+  tag: "v1"
+
+service:
+  type: LoadBalancer
+  port: 80
+
+envs:
+  - name: DB_User
+    value: <path:kv-v2/data/db#user>
+  - name: DB_Password
+    value: <path:kv-v2/data/db#password>
+  - name: DB_Host
+    value: "sql01"
+
+
+db:
+  name: mysql
+  envs:
+  - name: MYSQL_ROOT_PASSWORD
+    value: <path:kv-v2/data/db#password>

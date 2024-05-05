@@ -1,0 +1,28 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+
+  name: {{ .Values.db.name }}
+spec:
+  selector:
+    matchLabels:
+      name: {{ .Values.db.name }}
+  serviceName: {{ .Values.db.name }}
+  replicas: 1
+  minReadySeconds: 10 # by default is 0
+  template:
+    metadata:
+      labels:
+        name: {{ .Values.db.name }}
+    spec:
+      terminationGracePeriodSeconds: 10
+      containers:
+      - name: {{ .Values.db.name }}
+        image: {{ .Values.db.name }}
+        ports:
+        - containerPort: 3306
+          name: {{ .Values.db.name }}
+        {{- with .Values.db.envs }}
+        env:
+          {{- toYaml . | nindent 10 }}
+        {{- end }}
