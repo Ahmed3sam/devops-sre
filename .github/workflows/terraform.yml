@@ -18,7 +18,7 @@ jobs:
     defaults:
       run:
         shell: bash
-        working-directory: ./infrastructure 
+        working-directory: infrastructure 
 
     steps:
     # Checkout the repository to the GitHub Actions runner
@@ -35,7 +35,7 @@ jobs:
     - name: Terraform Init
       env:
         GOOGLE_CREDENTIALS: ${{ secrets.GOOGLE_CREDENTIALS }}
-      run: terraform init -backend-config 'credentials="$GOOGLE_CREDENTIALS"'
+      run: terraform init -backend-config "bucket=terraform-bucket-state-sample" -backend-config "prefix=terraform/infrastructure"  -backend-config 'credentials="$GOOGLE_CREDENTIALS"'
 
 
     # Checks that all Terraform configuration files adhere to a canonical format
