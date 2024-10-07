@@ -2,6 +2,14 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: my-app
+  annotations:
+    vault.hashicorp.com/agent-inject: "true"
+    vault.hashicorp.com/role: "prod-deben-backend-role"
+    vault.hashicorp.com/agent-inject-secret-config: "secret/data/myapp/config"
+    vault.hashicorp.com/agent-inject-template-config: |
+      {{- with secret "secret/data/myapp/config" -}}
+      export SECRET_USERNAME={{ .Data.data.password }}
+      {{- end -}}
 spec:
   replicas: 1
   selector:
@@ -9,8 +17,8 @@ spec:
       app: my-app
   template:
     metadata:
-      labels:
-        app: my-app
+      annotations:
+        vault.hashicorp.com/agent-inject: "true"
     spec:
       serviceAccountName: prod-deben-backend-sa
       containers:
