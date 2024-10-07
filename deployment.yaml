@@ -17,6 +17,7 @@ spec:
         vault.hashicorp.com/agent-inject: "true"
         vault.hashicorp.com/role: "prod-deben-backend-role"
         vault.hashicorp.com/agent-inject-secret-prod-deben-backend: "kv/data/prod-deben-backend"
+        vault.hashicorp.com/agent-inject-file-config.json: "/app/config/application.properties.json"
         vault.hashicorp.com/agent-inject-template-prod-deben-backend: |
           {{- with secret "kv/data/prod-deben-backend" -}}
           export MY_SECRET={{ .Data.data.test }}
