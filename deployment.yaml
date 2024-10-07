@@ -2,6 +2,8 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: my-app
+  labels:
+    app: my-app
   annotations:
     vault.hashicorp.com/agent-inject: "true"
     vault.hashicorp.com/role: "prod-deben-backend-role"
