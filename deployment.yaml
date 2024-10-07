@@ -19,7 +19,7 @@ spec:
         vault.hashicorp.com/agent-inject-secret-prod-deben-backend: "kv/data/prod-deben-backend"
         vault.hashicorp.com/agent-inject-template-prod-deben-backend: |
           {{- with secret "kv/data/prod-deben-backend" -}}
-          test={{ .Data.data.test }}
+          export MY_SECRET={{ .Data.data.test }}
           {{- end }}
     spec:
       serviceAccountName: prod-deben-backend-sa
