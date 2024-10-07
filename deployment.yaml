@@ -5,11 +5,11 @@ metadata:
   annotations:
     vault.hashicorp.com/agent-inject: "true"
     vault.hashicorp.com/role: "prod-deben-backend-role"
-    vault.hashicorp.com/agent-inject-secret-config: "secret/data/myapp/config"
-    vault.hashicorp.com/agent-inject-template-config: |
-      {{- with secret "secret/data/myapp/config" -}}
-      export SECRET_USERNAME={{ .Data.data.password }}
-      {{- end -}}
+    vault.hashicorp.com/agent-inject-secret-prod-deben-backend: "secret/prod-deben-backend"
+    vault.hashicorp.com/agent-inject-template-prod-deben-backend: |
+      {{- with secret "secret/prod-deben-backend" -}}
+      test={{ .Data.data.test }}
+      {{- end }}
 spec:
   replicas: 1
   selector:
@@ -24,9 +24,3 @@ spec:
       containers:
       - name: my-app
         image: nginx:latest
-        env:
-        - name: SECRET_USERNAME
-          valueFrom:
-            secretKeyRef:
-              name: prod-deben-backend
-              key: test
