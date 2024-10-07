@@ -21,7 +21,7 @@ spec:
           {{- with secret "kv/data/prod-deben-backend" -}}
           export MY_SECRET={{ .Data.data.test }}
           {{- end }}
-        vault.hashicorp.com/agent-inject-file-config.json: "/app/config/application.properties.json"
+        vault.hashicorp.com/agent-inject-file-config.json: "app/config/application.properties.json"
     spec:
       serviceAccountName: prod-deben-backend-sa
       containers:
