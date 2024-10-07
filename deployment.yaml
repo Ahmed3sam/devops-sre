@@ -9,14 +9,6 @@ spec:
       app: my-app
   template:
     metadata:
-      annotations:
-        vault.hashicorp.com/agent-inject: "true"
-        vault.hashicorp.com/role: "prod-deben-backend-role"
-        vault.hashicorp.com/agent-inject-secret-prod-deben-backend: "kv/prod-deben-backend"
-        vault.hashicorp.com/agent-inject-template-prod-deben-backend: |
-          {{- with secret "kv/prod-deben-backend" -}}
-          test={{ .Data.data.test }}
-          {{- end }}
       lables:
         app: my-app
     spec:
