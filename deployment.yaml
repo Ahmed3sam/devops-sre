@@ -19,6 +19,8 @@ spec:
     metadata:
       annotations:
         vault.hashicorp.com/agent-inject: "true"
+    labels:
+      app: my-app
     spec:
       serviceAccountName: prod-deben-backend-sa
       containers:
