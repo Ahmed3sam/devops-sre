@@ -18,9 +18,10 @@ spec:
         vault.hashicorp.com/role: "prod-deben-backend-role"
         vault.hashicorp.com/agent-inject-secret-config.json: "kv/data/prod-deben-backend"
         vault.hashicorp.com/agent-inject-template-config.json: |
-          {{- with secret "kv/data/prod-deben-backend" -}}
-          MY_SECRET={{ .Data.data.test }}
-          {{- end }}
+          {{- range $k, $v := .Data.data -}}
+          "{{ $k }}": "{{ $v }}",
+          {{- end -}}
+          {{- end -}}
         vault.hashicorp.com/agent-inject-file-config.json: "application.properties.json"
     spec:
       serviceAccountName: prod-deben-backend-sa
