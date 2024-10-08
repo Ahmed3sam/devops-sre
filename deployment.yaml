@@ -20,7 +20,7 @@ spec:
         vault.hashicorp.com/agent-inject-template-config.json: |
           {{- with secret "kv/data/prod-deben-backend" -}}
           {{- range $k, $v := .Data.data -}}
-          "{{ $k }}": "{{ $v }}",
+          {{ $k }}={{ $v }}
           {{- end -}}
           {{- end -}}
         vault.hashicorp.com/agent-inject-file-config.json: "application.properties.json"
